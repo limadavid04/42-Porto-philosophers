@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 12:27:08 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/03 12:33:45 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/05 16:24:01 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,10 @@ long long getCurrentTimeMillis()
 	gettimeofday(&currentTime, NULL);
 
 	return ((long long)currentTime.tv_sec * 1000 + currentTime.tv_usec / 1000);
+}
+long long get_time_interval(long long start_time)
+{
+	struct timeval currentTime;
+	gettimeofday(&currentTime, NULL);
+	return (((long long)currentTime.tv_sec * 1000 + currentTime.tv_usec / 1000) - start_time);
 }

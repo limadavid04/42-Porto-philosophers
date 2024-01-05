@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 11:43:02 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/03 12:16:32 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/05 17:54:20 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,11 +18,12 @@ void	data_init(int argc, char **argv, t_data *data)
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
+	data->finish_simulation = 0;
 	data->meal_minimum = 0;
 	if (argc == 6)
 		data->meal_minimum = ft_atoi(argv[5]);
 	data->start_time = getCurrentTimeMillis();
-	pthread_mutex_init(&data->dead, NULL);
+	pthread_mutex_init(&data->dead_mutex, NULL);
 	pthread_mutex_init(&data->write_mutex, NULL);
 }
 void	philos_init(t_philo *philos, t_data *data)
@@ -38,6 +39,7 @@ void	philos_init(t_philo *philos, t_data *data)
 		philos[i].meals_eaten = 0;
 		philos[i].last_meal = data->start_time;
 		philos[i].data = data;
+		pthread_mutex_init(&philos[i].meal_mutex, NULL);
 		i++;
 	}
 }
