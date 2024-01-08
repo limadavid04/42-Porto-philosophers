@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 11:43:02 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/05 17:54:20 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/08 12:08:51 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void	data_init(int argc, char **argv, t_data *data)
 	data->time_to_die = ft_atoi(argv[2]);
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
-	data->finish_simulation = 0;
+	data->dead_flag = 0;
 	data->meal_minimum = 0;
 	if (argc == 6)
 		data->meal_minimum = ft_atoi(argv[5]);
@@ -59,3 +59,4 @@ void	forks_init(t_philo *philos,  pthread_mutex_t *forks, int fork_nbr)
 		i++;
 	}
 }
+

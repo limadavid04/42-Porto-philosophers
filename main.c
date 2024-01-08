@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 16:50:19 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/05 18:02:54 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/08 17:00:32 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,19 +23,14 @@
 // ◦ timestamp_in_ms X is thinking
 // ◦ timestamp_in_ms X died
 
-void	print_msg(const char *msg,  t_philo *philo)
+int	ft_usleep(size_t milliseconds)
 {
-	pthread_mutex_t	*write;
-	int				id;
-	long long 		time;
+	size_t	start;
 
-	id = philo->id;
-	write = &philo->data->write_mutex;
-	time = get_time_interval(philo->data->start_time);
-	pthread_mutex_lock(write);
-	printf("%lld %d ", time, id);
-	printf("%s", msg);
-	pthread_mutex_unlock(write);
+	start = getCurrentTimeMillis();
+	while ((getCurrentTimeMillis() - start) < milliseconds)
+		usleep(500);
+	return (0);
 }
 void	eat(t_philo *philo)
 {
@@ -46,70 +41,78 @@ void	eat(t_philo *philo)
 	if (id % 2 == 0)
 	{
 		pthread_mutex_lock(philo->left_fork);
+		if (get_dead_flag_val(philo->data) == 1)
+			return ;
 		print_msg("has taken a fork\n", philo);
 		pthread_mutex_lock(philo->right_fork);
-		print_msg("is_eating\n", philo);
-		philo->last_meal = getCurrentTimeMillis();
-		usleep(philo->data->time_to_eat * 1000);
+		if (get_dead_flag_val(philo->data) == 1)
+			return ;
+		print_msg("has taken a fork\n", philo);
+		if (get_dead_flag_val(philo->data) == 1)
+		{
+			// pthread_mutex_unlock(philo->left_fork);
+			// pthread_mutex_unlock(philo->right_fork);
+			return ;
+		}
 		pthread_mutex_lock(&philo->meal_mutex);
+		philo->last_meal = getCurrentTimeMillis();
 		philo->meals_eaten++;
 		pthread_mutex_unlock(&philo->meal_mutex);
-		pthread_mutex_unlock(philo->right_fork);
+		print_msg("is eating\n", philo);
+		ft_usleep(philo->data->time_to_eat);
 		pthread_mutex_unlock(philo->left_fork);
+		pthread_mutex_unlock(philo->right_fork);
 	}
 	else
 	{
 		pthread_mutex_lock(philo->right_fork);
+		if (get_dead_flag_val(philo->data) == 1)
+			return ;
 		print_msg("has taken a fork\n", philo);
 		pthread_mutex_lock(philo->left_fork);
-		print_msg("is eating\n", philo);
-		philo->last_meal = getCurrentTimeMillis();
-		usleep(philo->data->time_to_eat * 1000);
+		if (get_dead_flag_val(philo->data) == 1)
+			return ;
+		print_msg("has taken a fork\n", philo);
+		if (get_dead_flag_val(philo->data) == 1)
+		{
+			// pthread_mutex_unlock(philo->right_fork);
+			// pthread_mutex_unlock(philo->left_fork);
+			return ;
+		}
 		pthread_mutex_lock(&philo->meal_mutex);
+		philo->last_meal = getCurrentTimeMillis();
 		philo->meals_eaten++;
 		pthread_mutex_unlock(&philo->meal_mutex);
+		print_msg("is eating\n", philo);
+		ft_usleep(philo->data->time_to_eat);
 		pthread_mutex_unlock(philo->right_fork);
 		pthread_mutex_unlock(philo->left_fork);
 	}
 }
-int	check_starvation(t_philo *philo)
-{
-	long long	time_to_die;
-	time_to_die = philo->data->time_to_die;
-	if (get_time_interval(philo->last_meal) > time_to_die)
-		return (1);
-	return (0);
-}
+
 void	*philo_cycle(void *philo)
 {
-	pthread_mutex_t	*dead_mutex;
+	// pthread_mutex_t	*dead_mutex;
 	t_philo			*cur_philo;
-
+	// int				meal_minimum;
 	cur_philo = (t_philo *)philo;
-	dead_mutex = &cur_philo->data->dead_mutex;
+	// dead_mutex = &cur_philo->data->dead_mutex;
 	while (1)
 	{
-		pthread_mutex_lock(dead_mutex);
-		if (cur_philo->data->finish_simulation == 1)
-		{
-			pthread_mutex_unlock(dead_mutex);
+		if (get_dead_flag_val(cur_philo->data) == 1)
 			break ;
-		}
-		if (check_starvation(cur_philo) == 1)
-		{
-			pthread_mutex_lock(dead_mutex);
-			cur_philo->data->finish_simulation = 1;
-			print_msg("died\n", cur_philo);
-			pthread_mutex_unlock(dead_mutex);
-			break ;
-		}
 		eat(cur_philo);
+		if (get_dead_flag_val(cur_philo->data) == 1)
+			break ;
 		print_msg("is sleeping\n", cur_philo);
-		usleep(cur_philo->data->time_to_sleep * 1000);
+		ft_usleep(cur_philo->data->time_to_sleep);
+		if (get_dead_flag_val(cur_philo->data) == 1)
+			break ;
 		print_msg("is thinking\n", cur_philo);
 	}
 	return (NULL);
 }
+
 void	threads_init(t_philo *philos, int nbr_philos)
 {
 	int	i;
@@ -124,70 +127,37 @@ void	threads_init(t_philo *philos, int nbr_philos)
 		i++;
 	}
 }
-void	threads_join(t_philo *philos, int nbr_philos)
-{
-	int	i;
 
-	i = 0;
-	while (i < nbr_philos)
-	{
-		if (pthread_join(philos[i].thread, NULL) != 0)
-		{
-			perror("failed to join thread");
-		}
-		i++;
-	}
-}
-void	mutex_destroy(pthread_mutex_t *forks, t_data *data, int fork_nbr, t_philo *philos)
-{
-	int	i;
-
-	i = 0;
-	pthread_mutex_destroy(&data->dead_mutex);
-	pthread_mutex_destroy(&data->write_mutex);
-	while (i < fork_nbr)
-	{
-		pthread_mutex_destroy(&forks[i]);
-		i++;
-	}
-	i = 0;
-	while (i < fork_nbr)
-	{
-		pthread_mutex_destroy(&philos[i].meal_mutex);
-		i++;
-	}
-}
 void	monitor_philos(t_philo *philos, t_data *data)
 {
 	int	i;
 	int	nbr_philos;
 	int	ate_min_meals;
-
+	int	min_meals;
 
 	nbr_philos = data->nbr_philos;
-	i = 0;
+	min_meals = data->meal_minimum;
 	while (1)
 	{
-		pthread_mutex_lock(&data->dead_mutex);
-		if (data->finish_simulation == 1)
-		{
-			pthread_mutex_unlock(&data->dead_mutex);
-			break ;
-		}
 		ate_min_meals = 0;
+		i = 0;
 		while (i < nbr_philos)
 		{
+			if (check_if_dead(&philos[i]) == 1)
+				break ;
 			pthread_mutex_lock(&philos[i].meal_mutex);
-			if (philos[i].meals_eaten >= data->meal_minimum)
+			if (philos[i].meals_eaten >= min_meals)
 				ate_min_meals++;
 			pthread_mutex_unlock(&philos[i].meal_mutex);
 			i++;
 		}
-		if (ate_min_meals == data->nbr_philos)
+		if (get_dead_flag_val(data) == 1)
+			break ;
+		if (ate_min_meals == nbr_philos && min_meals != 0)
 		{
 			pthread_mutex_lock(&data->dead_mutex);
-			data->finish_simulation = 1;
-			pthread_mutex_unlock(&data->dead_mutex);
+			data->dead_flag = 1;
+			pthread_mutex_lock(&data->dead_mutex);
 			break ;
 		}
 	}
@@ -204,6 +174,7 @@ int	main(int argc, char **argv)
 	philos_init(philos, &data);
 	forks_init(philos, forks,  data.nbr_philos);
 	threads_init(philos, data.nbr_philos);
+	monitor_philos(philos, &data);
 	threads_join(philos, data.nbr_philos);
 	mutex_destroy(forks, &data, data.nbr_philos, philos);
 	free(philos);
