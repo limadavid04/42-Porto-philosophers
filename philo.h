@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 11:49:12 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/08 12:37:10 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/09 11:44:35 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	forks_init(t_philo *philos,  pthread_mutex_t *forks, int fork_nbr);
 //utils.c
 long long	getCurrentTimeMillis();
 // long long	get_time_interval(long long start_time);
-void	print_msg(const char *msg,  t_philo *philo);
+void	print_msg(const char *msg,  t_philo *philo, int check_if_dead);
 int	check_starvation(t_philo *philo);
 int	check_if_dead(t_philo *philo);
 int		ft_atoi(const char *str);

@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 12:27:08 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/08 17:03:26 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/09 11:50:25 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,7 @@ long long get_time_interval(long long start_time)
 	gettimeofday(&currentTime, NULL);
 	return (((long long)currentTime.tv_sec * 1000 + currentTime.tv_usec / 1000) - start_time);
 }
-void	print_msg(const char *msg,  t_philo *philo)
+void	print_msg(const char *msg,  t_philo *philo, int check_if_dead)
 {
 	pthread_mutex_t	*write;
 	int				id;
@@ -59,6 +59,11 @@ void	print_msg(const char *msg,  t_philo *philo)
 	id = philo->id;
 	write = &philo->data->write_mutex;
 	time = get_time_interval(philo->data->start_time);
+	if (check_if_dead == 1)
+	{
+		if (get_dead_flag_val(philo->data) == 1)
+			return ;
+	}
 	pthread_mutex_lock(write);
 	printf("%lld %d ", time, id);
 	printf("%s", msg);
@@ -86,7 +91,7 @@ int	check_if_dead(t_philo *philo)
 		pthread_mutex_lock(dead_mutex);
 		philo->data->dead_flag = 1;
 		pthread_mutex_unlock(dead_mutex);
-		print_msg("died\n", philo);
+		print_msg("died\n", philo, 0);
 		return (1);
 	}
 	return (0);
