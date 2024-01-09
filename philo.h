@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 11:49:12 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/09 11:44:35 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/09 14:49:56 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ typedef struct s_philo
 	long long	last_meal;
 	pthread_mutex_t	*left_fork;
 	pthread_mutex_t	*right_fork;
-	pthread_mutex_t	meal_mutex;
+	pthread_mutex_t	meals_eaten_mutex;
+	pthread_mutex_t	last_meal_mutex;
 	t_data	*data;
 } t_philo;
 

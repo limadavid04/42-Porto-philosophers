@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/08 12:05:19 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/08 12:36:48 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/09 14:51:07 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,8 @@ void	mutex_destroy(pthread_mutex_t *forks, t_data *data, int fork_nbr, t_philo *
 	i = 0;
 	while (i < fork_nbr)
 	{
-		pthread_mutex_destroy(&philos[i].meal_mutex);
+		pthread_mutex_destroy(&philos[i].meals_eaten_mutex);
+		pthread_mutex_destroy(&philos[i].last_meal_mutex);
 		i++;
 	}
 }

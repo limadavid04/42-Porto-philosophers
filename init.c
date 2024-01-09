@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 11:43:02 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/08 12:08:51 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/09 14:50:34 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,8 @@ void	philos_init(t_philo *philos, t_data *data)
 		philos[i].meals_eaten = 0;
 		philos[i].last_meal = data->start_time;
 		philos[i].data = data;
-		pthread_mutex_init(&philos[i].meal_mutex, NULL);
+		pthread_mutex_init(&philos[i].meals_eaten_mutex, NULL);
+		pthread_mutex_init(&philos[i].last_meal_mutex, NULL);
 		i++;
 	}
 }

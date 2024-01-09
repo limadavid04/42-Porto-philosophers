@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 12:27:08 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/09 11:50:25 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/09 14:54:41 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,9 +75,9 @@ int	check_starvation(t_philo *philo)
 	long long	interval;
 
 	time_to_die = philo->data->time_to_die;
-	pthread_mutex_lock(&philo->meal_mutex);
+	pthread_mutex_lock(&philo->last_meal_mutex);
 	interval = getCurrentTimeMillis() - philo->last_meal;
-	pthread_mutex_unlock(&philo->meal_mutex);
+	pthread_mutex_unlock(&philo->last_meal_mutex);
 	if (interval > time_to_die)
 		return (1);
 	return (0);
