@@ -3,7 +3,7 @@
 NAME= philo
 CC= cc
 CFLAGS = -g -Wall -Wextra -Werror -pthread
-FILES = main init utils utils1
+FILES = philo init philo_cycle philo_monitor utils utils1
 
 all: $(NAME)
 

@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 11:43:02 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/09 14:50:34 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/10 15:33:56 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,4 +60,33 @@ void	forks_init(t_philo *philos,  pthread_mutex_t *forks, int fork_nbr)
 		i++;
 	}
 }
+void	threads_join(t_philo *philos, int nbr_philos)
+{
+	int	i;
+
+	i = 0;
+	while (i < nbr_philos)
+	{
+		if (pthread_join(philos[i].thread, NULL) != 0)
+		{
+			perror("failed to join thread");
+		}
+		i++;
+	}
+}
+void	threads_init(t_philo *philos, int nbr_philos)
+{
+	int	i;
+
+	i = 0;
+	while (i < nbr_philos)
+	{
+		if (pthread_create(&philos[i].thread, NULL, &philo_cycle, &philos[i]) != 0)
+		{
+			perror("failed to create thread");
+		}
+		i++;
+	}
+}
+
 

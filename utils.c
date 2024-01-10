@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 12:27:08 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/09 14:54:41 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/10 15:22:28 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,49 +50,33 @@ long long get_time_interval(long long start_time)
 	gettimeofday(&currentTime, NULL);
 	return (((long long)currentTime.tv_sec * 1000 + currentTime.tv_usec / 1000) - start_time);
 }
-void	print_msg(const char *msg,  t_philo *philo, int check_if_dead)
+void	ft_usleep(size_t milliseconds, t_philo *philo)
 {
-	pthread_mutex_t	*write;
-	int				id;
-	long long 		time;
+	size_t	start;
 
-	id = philo->id;
-	write = &philo->data->write_mutex;
-	time = get_time_interval(philo->data->start_time);
-	if (check_if_dead == 1)
-	{
-		if (get_dead_flag_val(philo->data) == 1)
-			return ;
-	}
-	pthread_mutex_lock(write);
-	printf("%lld %d ", time, id);
-	printf("%s", msg);
-	pthread_mutex_unlock(write);
+	(void)philo;
+	start = getCurrentTimeMillis();
+	while (((getCurrentTimeMillis() - start) < milliseconds) && get_dead_flag_val(philo->data) != 1)
+		usleep(500);
 }
-int	check_starvation(t_philo *philo)
-{
-	long long	time_to_die;
-	long long	interval;
 
-	time_to_die = philo->data->time_to_die;
-	pthread_mutex_lock(&philo->last_meal_mutex);
-	interval = getCurrentTimeMillis() - philo->last_meal;
-	pthread_mutex_unlock(&philo->last_meal_mutex);
-	if (interval > time_to_die)
-		return (1);
-	return (0);
-}
-int	check_if_dead(t_philo *philo)
+void	mutex_destroy(pthread_mutex_t *forks, t_data *data, int fork_nbr, t_philo *philos)
 {
-	pthread_mutex_t	*dead_mutex;
-	dead_mutex = &philo->data->dead_mutex;
-	if (check_starvation(philo) == 1)
+	int	i;
+
+	i = 0;
+	pthread_mutex_destroy(&data->dead_mutex);
+	pthread_mutex_destroy(&data->write_mutex);
+	while (i < fork_nbr)
 	{
-		pthread_mutex_lock(dead_mutex);
-		philo->data->dead_flag = 1;
-		pthread_mutex_unlock(dead_mutex);
-		print_msg("died\n", philo, 0);
-		return (1);
+		pthread_mutex_destroy(&forks[i]);
+		i++;
 	}
-	return (0);
+	i = 0;
+	while (i < fork_nbr)
+	{
+		pthread_mutex_destroy(&philos[i].meals_eaten_mutex);
+		pthread_mutex_destroy(&philos[i].last_meal_mutex);
+		i++;
+	}
 }

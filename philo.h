@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 11:49:12 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/09 14:49:56 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/10 15:47:39 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,24 +48,29 @@ typedef struct s_philo
 
 
 //init.c
-void	data_init(int argc, char **argv, t_data *data);
-void	philos_init(t_philo *philos, t_data *data);
-void	forks_init(t_philo *philos,  pthread_mutex_t *forks, int fork_nbr);
-// void	threads_init(t_philo *philos, int nbr_philos);
+void		data_init(int argc, char **argv, t_data *data);
+void		philos_init(t_philo *philos, t_data *data);
+void		forks_init(t_philo *philos,  pthread_mutex_t *forks, int fork_nbr);
+void		threads_join(t_philo *philos, int nbr_philos);
+void		threads_init(t_philo *philos, int nbr_philos);
 
+//philo_cycle.c
+void		*philo_cycle(void *philo);
+
+//philo_monitor.c
+void		monitor_philos(t_philo *philos, t_data *data);
+int			get_dead_flag_val(t_data *data);
 
 //utils.c
+int			ft_atoi(const char *str);
 long long	getCurrentTimeMillis();
-// long long	get_time_interval(long long start_time);
-void	print_msg(const char *msg,  t_philo *philo, int check_if_dead);
-int	check_starvation(t_philo *philo);
-int	check_if_dead(t_philo *philo);
-int		ft_atoi(const char *str);
+long long	get_time_interval(long long start_time);
+void		ft_usleep(size_t milliseconds, t_philo *philo);
+void		mutex_destroy(pthread_mutex_t *forks, t_data *data, int fork_nbr, t_philo *philos);
 
 //utils1.c
-void	threads_join(t_philo *philos, int nbr_philos);
-void	mutex_destroy(pthread_mutex_t *forks, t_data *data, int fork_nbr, t_philo *philos);
-int	get_dead_flag_val(t_data *data);
-
+void		take_fork(pthread_mutex_t *fork, t_philo *philo);
+void		release_fork(pthread_mutex_t *fork);
+void		print_msg(const char *msg,  t_philo *philo, int check_if_dead);
 
 #endif
