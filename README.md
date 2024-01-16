@@ -1,6 +1,7 @@
 # Philosophers
 
-This project is a simulation of the [Dijkstra's dining philosophers](https://en.wikipedia.org/wiki/Dining_philosophers_problem) problem. \
+This project simulates [Dijkstra's dining philosophers](https://en.wikipedia.org/wiki/Dining_philosophers_problem) problem. \
+It is an analogy to the problem of synchronization in operating systems.
 while doing so we learnt about threads and mutexes.
 
 Check out the subject for further info:\
