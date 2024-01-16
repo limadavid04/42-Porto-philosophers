@@ -1,7 +1,7 @@
 # Philosophers
 
 This project is a simulation of the [Dijkstra's dining philosophers](https://en.wikipedia.org/wiki/Dining_philosophers_problem) problem. \
-By doing so we learnt about threads and mutexes.
+while doing so we learnt about threads and mutexes.
 
 Check out the subject for further info:\
 -> [Subject here](https://github.com/limadavid04/42-Porto-philosophers/blob/main/en.subject.pdf)
