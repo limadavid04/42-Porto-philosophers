@@ -2,7 +2,7 @@
 # NAME = ft_printf
 NAME= philo
 CC= cc
-CFLAGS = -g -Wall -Wextra -Werror -pthread
+CFLAGS = -g -Wall -Wextra -Werror -pthread -fsanitize=thread
 FILES = philo init philo_cycle philo_monitor utils utils1
 
 all: $(NAME)

@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/03 11:43:02 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/10 15:33:56 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/16 11:12:06 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,14 @@ void	data_init(int argc, char **argv, t_data *data)
 	data->time_to_eat = ft_atoi(argv[3]);
 	data->time_to_sleep = ft_atoi(argv[4]);
 	data->dead_flag = 0;
-	data->meal_minimum = 0;
+	data->meal_minimum = -1;
 	if (argc == 6)
 		data->meal_minimum = ft_atoi(argv[5]);
-	data->start_time = getCurrentTimeMillis();
+	data->start_time = get_current_time_millis();
 	pthread_mutex_init(&data->dead_mutex, NULL);
 	pthread_mutex_init(&data->write_mutex, NULL);
 }
+
 void	philos_init(t_philo *philos, t_data *data)
 {
 	int	i;
@@ -44,22 +45,27 @@ void	philos_init(t_philo *philos, t_data *data)
 		i++;
 	}
 }
-void	forks_init(t_philo *philos,  pthread_mutex_t *forks, int fork_nbr)
+
+void	forks_init(t_philo *philos, pthread_mutex_t *forks, int fork_nbr)
 {
-	int i;
-	int philo_id;
+	int	i;
+	int	philo_id;
 
 	i = 0;
 	while (i < fork_nbr)
 	{
 		philo_id = philos[i].id;
-		philos[i].left_fork = &forks[(philo_id +1) % fork_nbr];
 		philos[i].right_fork = &forks[philo_id];
-		pthread_mutex_init(philos[i].left_fork, NULL);
 		pthread_mutex_init(philos[i].right_fork, NULL);
+		if (fork_nbr != 1)
+		{
+			philos[i].left_fork = &forks[(philo_id +1) % fork_nbr];
+			pthread_mutex_init(philos[i].left_fork, NULL);
+		}
 		i++;
 	}
 }
+
 void	threads_join(t_philo *philos, int nbr_philos)
 {
 	int	i;
@@ -69,11 +75,13 @@ void	threads_join(t_philo *philos, int nbr_philos)
 	{
 		if (pthread_join(philos[i].thread, NULL) != 0)
 		{
-			perror("failed to join thread");
+			printf("failed to join thread");
+			return ;
 		}
 		i++;
 	}
 }
+
 void	threads_init(t_philo *philos, int nbr_philos)
 {
 	int	i;
@@ -81,12 +89,12 @@ void	threads_init(t_philo *philos, int nbr_philos)
 	i = 0;
 	while (i < nbr_philos)
 	{
-		if (pthread_create(&philos[i].thread, NULL, &philo_cycle, &philos[i]) != 0)
+		if (pthread_create(&philos[i].thread, NULL, \
+		&philo_cycle, &philos[i]) != 0)
 		{
-			perror("failed to create thread");
+			printf("failed to create thread");
+			return ;
 		}
 		i++;
 	}
 }
-
-

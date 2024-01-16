@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/01/02 12:27:08 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/10 15:22:28 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/12 11:23:08 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,30 +37,38 @@ int	ft_atoi(const char *str)
 	}
 	return (nbr * signal);
 }
-long long getCurrentTimeMillis()
-{
-	struct timeval currentTime;
-	gettimeofday(&currentTime, NULL);
 
-	return ((long long)currentTime.tv_sec * 1000 + currentTime.tv_usec / 1000);
-}
-long long get_time_interval(long long start_time)
+long long	get_current_time_millis(void)
 {
-	struct timeval currentTime;
-	gettimeofday(&currentTime, NULL);
-	return (((long long)currentTime.tv_sec * 1000 + currentTime.tv_usec / 1000) - start_time);
+	struct timeval	current_time;
+
+	gettimeofday(&current_time, NULL);
+	return ((long long)current_time.tv_sec * 1000 + \
+	current_time.tv_usec / 1000);
 }
+
+long long	get_time_interval(long long start_time)
+{
+	struct timeval	current_time;
+
+	gettimeofday(&current_time, NULL);
+	return (((long long)current_time.tv_sec * 1000 + \
+	current_time.tv_usec / 1000) - start_time);
+}
+
 void	ft_usleep(size_t milliseconds, t_philo *philo)
 {
 	size_t	start;
 
 	(void)philo;
-	start = getCurrentTimeMillis();
-	while (((getCurrentTimeMillis() - start) < milliseconds) && get_dead_flag_val(philo->data) != 1)
+	start = get_current_time_millis();
+	while (((get_current_time_millis() - start) < milliseconds) \
+	&& get_dead_flag_val(philo->data) != 1)
 		usleep(500);
 }
 
-void	mutex_destroy(pthread_mutex_t *forks, t_data *data, int fork_nbr, t_philo *philos)
+void	mutex_destroy(pthread_mutex_t *forks, t_data *data, \
+int fork_nbr, t_philo *philos)
 {
 	int	i;
 
