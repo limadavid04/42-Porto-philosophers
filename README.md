@@ -1,12 +1,10 @@
 # Philosophers
 
-## Philosophers dinning problem
 This project is a simulation of the [Dijkstra's dining philosophers](https://en.wikipedia.org/wiki/Dining_philosophers_problem) problem. \
 By doing so we learnt about threads and mutexes.
 
 Check out the subject for further info:\
 -> [Subject here](https://github.com/maricard18/42-philosophers/blob/main/philo/extras/en.subject.pdf)
-
 
 ## How To Use
 
