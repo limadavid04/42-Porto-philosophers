@@ -6,7 +6,7 @@
 /*   By: dlima <marvin@42.fr>                       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/12/29 16:50:19 by dlima             #+#    #+#             */
-/*   Updated: 2024/01/16 11:19:32 by dlima            ###   ########.fr       */
+/*   Updated: 2024/01/16 13:43:47 by dlima            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,13 +35,16 @@ int	is_positive_int(char *str)
 
 int	check_input(int argc, char **argv)
 {
-	if (argc < 5 || argc > 6)
+	int	arg_count;
+
+	arg_count = argc;
+	if (arg_count < 5 || arg_count > 6)
 		return (0);
-	while (argc > 1)
+	while (arg_count > 1)
 	{
-		if (!is_positive_int(argv[argc - 1]))
+		if (!is_positive_int(argv[arg_count - 1]))
 			return (0);
-		argc--;
+		arg_count--;
 	}
 	if (ft_atoi(argv[1]) == 0)
 		return (0);
